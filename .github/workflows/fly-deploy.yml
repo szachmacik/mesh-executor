@@ -1,0 +1,18 @@
+
+name: Deploy to Fly.io (DR)
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['server.js','Dockerfile']
+
+jobs:
+  deploy-fly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
