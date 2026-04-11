@@ -1,4 +1,3 @@
-
 app = "mesh-executor-fly"
 primary_region = "fra"
 
@@ -6,23 +5,26 @@ primary_region = "fra"
   dockerfile = "Dockerfile"
 
 [env]
-  MESH_TOKEN = "holon-mesh-internal-2026"
   PORT = "3080"
+  MESH_TOKEN = "holon-mesh-internal-2026"
+  SSH_AUTH = "b554f5dce9ce925e9da21b44f288cdf402c8daabbff56fe7d7ed60fe60e771d5"
 
 [[services]]
   internal_port = 3080
   protocol = "tcp"
-  
   [[services.ports]]
     handlers = ["http"]
     port = 80
   [[services.ports]]
-    handlers = ["tls","http"]
+    handlers = ["tls", "http"]
     port = 443
-
-[checks]
-  [checks.alive]
-    type = "http"
+  [[services.http_checks]]
     interval = "30s"
-    timeout = "5s"
+    timeout = "10s"
+    grace_period = "15s"
+    method = "get"
     path = "/health"
+
+[metrics]
+  port = 9091
+  path = "/metrics"
