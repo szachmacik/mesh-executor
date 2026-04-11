@@ -1,0 +1,12 @@
+FROM oven/bun:1
+WORKDIR /app
+
+# Install docker CLI for n8n healer
+RUN apt-get update && apt-get install -y docker.io curl && rm -rf /var/lib/apt/lists/*
+
+COPY healer.ts ./healer.ts
+COPY consumer.ts ./consumer.ts
+COPY start.sh ./start.sh
+RUN chmod +x start.sh
+
+CMD ["./start.sh"]
