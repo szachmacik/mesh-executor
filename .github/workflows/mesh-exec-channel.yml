@@ -1,0 +1,33 @@
+name: MESH Exec Channel
+on:
+  repository_dispatch:
+    types: [mesh_exec]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to execute'
+        required: true
+        default: 'echo ok'
+      callback_url:
+        description: 'URL to POST result'
+        required: false
+
+jobs:
+  exec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute command
+        id: exec
+        run: |
+          RESULT=$(eval "${{ github.event.inputs.command || github.event.client_payload.command }}" 2>&1 | head -c 2000)
+          echo "result<<EOF" >> $GITHUB_OUTPUT
+          echo "$RESULT" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+      - name: Callback result
+        if: ${{ github.event.inputs.callback_url || github.event.client_payload.callback_url }}
+        run: |
+          curl -s -X POST "${{ github.event.inputs.callback_url || github.event.client_payload.callback_url }}" \
+            -H "Content-Type: application/json" \
+            -H "x-mesh-key: holon-mesh-internal-2026" \
+            -d '{"stdout":"${{ steps.exec.outputs.result }}","via":"github-actions"}'
