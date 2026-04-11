@@ -1,0 +1,19 @@
+name: MESH Remote Exec
+on:
+  repository_dispatch:
+    types: [mesh-exec]
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to execute'
+        required: true
+jobs:
+  exec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Execute MESH command
+        run: |
+          curl -s -X POST https://executor.ofshore.dev/exec \
+            -H "x-mesh-key: holon-mesh-internal-2026" \
+            -H "Content-Type: application/json" \
+            -d '{"command":"${{ github.event.inputs.command || github.event.client_payload.command }}"}'
