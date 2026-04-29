@@ -1,0 +1,13 @@
+name = "mesh-executor"
+main = "server.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "KB_META"
+database_name = "kb-metadata"
+database_id = "1f507f5c-e9f8-4e22-99eb-a4e9a95a5e58"
+
+[[d1_databases]]
+binding = "AGENT_STATE"
+database_name = "agent-state"
+database_id = "4c67a2b1-6830-44ec-97b1-7c8f93722add"
