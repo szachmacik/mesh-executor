@@ -46,7 +46,22 @@ function forward(command, timeout, callback) {
     res.on('data', c => data += c)
     res.on('end', () => {
       try { callback(null, JSON.parse(data)) }
-      catch(e) { callback(null, { stdout: data, error: e.message }) }
+      catch(e) { callback(null, { stdout: data, error: e.messag
+// === MORFICZNE POLE INTEGRATION ===
+async function getMorphicWisdom(env) {
+  if (!env.AGENT_STATE) return null;
+  try {
+    const imprints = await env.AGENT_STATE.prepare(
+      'SELECT imprint_for_future FROM morphic_field ORDER BY cycle_ts DESC LIMIT 10'
+    ).all();
+    return imprints.results?.map(i => i.imprint_for_future) || [];
+  } catch (e) {
+    console.error('Morficzne pole:', e.message);
+    return null;
+  }
+}
+
+e }) }
     })
   })
   req.on('error', e => callback(e))
